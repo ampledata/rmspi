@@ -1,0 +1,30 @@
+{
+  "mycall": "W2GMD-15",
+  "secure_login_password": "MJE9UK",
+  "auxiliary_addresses": [],
+  "locator": "CM87ss",
+  "http_addr": "0.0.0.0:8080",
+  "motd": [
+    "Open source Winlink client - getpat.io"
+  ],
+  "connect_aliases": {
+    "telnet": "telnet://{mycall}:CMSTelnet@cms.winlink.org:8772/wl2k",
+    "KC6SSM-10": "ax25:///KC6SSM-10"
+  },
+  "listen": ["ax25", "telnet"],
+  "ax25": {
+    "port": "0",
+    "beacon": {
+      "every": 3600,
+      "message": "Winlink P2P",
+      "destination": "IDENT"
+    },
+    "rig": ""
+  },
+  "telnet": {
+    "listen_addr": ":8774",
+    "password": ""
+  },
+  "schedule": {},
+  "version_reporting_disabled": false
+}

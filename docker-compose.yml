@@ -1,0 +1,20 @@
+version: '2'
+volumes:
+  persist-data:
+services:
+  nginx:
+    build: ./nginx
+    restart: always
+    network_mode: host
+    volumes:
+      - 'persist-data:/persist-data'
+    ports:
+      - "80:80"
+      - "443:443"
+  wl-pi:
+    build: ./wl-pi
+    restart: always
+    privileged: true
+    network_mode: host
+    volumes:
+      - 'persist-data:/persist-data'

@@ -1,0 +1,60 @@
+FROM balenalib/%%BALENA_MACHINE_NAME%%-python:3-buster-build
+
+ENV UDEV=1
+
+RUN install_packages \
+  alsa-utils \
+  ax25-apps \
+  ax25-tools \
+  cron \
+  gpsd \
+  gpsd-clients \
+  libasound2-dev \
+  libax25 \
+  libgps-dev \
+  libhamlib-dev \
+  libhamlib-utils \
+  libudev-dev \
+  minicom \
+  portaudio19-dev \
+  python3-requests \
+  python3-serial \
+  rsync \
+  supervisor \
+  usbutils \
+  vim
+
+WORKDIR /rms-pi/wl-pi/build
+
+RUN git clone https://github.com/nwdigitalradio/rmsgw && \
+  cd rmsgw && \
+  ./autogen.sh && \
+  ./configure && \
+  make install
+
+RUN git clone http://github.com/wb2osz/direwolf.git && \
+  cd direwolf && \
+  make install && \
+  make install-conf
+
+WORKDIR /rms-pi/wl-pi
+
+ADD . .
+
+RUN dpkg -i src/pat_0.7.0_linux_armhf.deb
+
+RUN mkdir -p /persist-data/wl2k
+
+RUN ln -s /persist-data/wl2k /root/.wl2k
+RUN ln -s /usr/local/etc/wl-pi /etc
+RUN ln -s /etc/ax25 /usr/local/etc
+RUN adduser --no-create-home --system rmsgw
+
+RUN rsync -vaK etc/ /etc/
+
+# Create cron:
+# 17,46 * * * * /usr/local/bin/rmsgw_aci > /dev/null 2>&1
+
+# Having these as two steps allows bypassing of CMD on `docker run`.
+ENTRYPOINT ["./scripts/docker-entrypoint.sh"]
+CMD ["supervisord"]

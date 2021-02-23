@@ -1,0 +1,11 @@
+FROM balenalib/%%RESIN_MACHINE_NAME%%-debian
+
+WORKDIR /nginx-proxy
+
+RUN install_packages nginx
+
+COPY . .
+
+ENTRYPOINT ["./docker-entrypoint.sh"]
+
+CMD ["nginx"]
